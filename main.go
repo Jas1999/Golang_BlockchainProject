@@ -17,7 +17,7 @@ type Block struct {
 
 func (b *Block) DeriveHash() { // method to create hash based on data and previous
 	info := bytes.Join([][]byte{b.Data, b.PrevHash}, []byte{}) // 2d of data and prev, and empty bytpes
-	hash := sha256.Sum256(info)
+	hash := sha256.Sum256(info)                                // change data changes hash otherwise same
 	b.Hash = hash[:]
 }
 
