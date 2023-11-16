@@ -1,10 +1,5 @@
 package blockchain
 
-import (
-	"bytes"
-	"crypto/sha256"
-)
-
 type BlockChain struct { // simple strucutre for chian
 	Blocks []*Block // B in blocks capital makes it public
 }
@@ -12,17 +7,28 @@ type Block struct {
 	Hash     []byte
 	Data     []byte
 	PrevHash []byte
+	Nonce    int
 }
 
+/*
+// old version done by proof of work now
 func (b *Block) DeriveHash() { // method to create hash based on data and previous
 	info := bytes.Join([][]byte{b.Data, b.PrevHash}, []byte{}) // 2d of data and prev, and empty bytpes
 	hash := sha256.Sum256(info)                                // change data changes hash otherwise same
 	b.Hash = hash[:]
 }
-
+*/
 func CreateBlockk(data string, prevHash []byte) *Block { // take string and prev output pointer to blcok
-	block := &Block{[]byte{}, []byte(data), prevHash} // new block
-	block.DeriveHash()
+	block := &Block{[]byte{}, []byte(data), prevHash, 0} // new block
+
+	// block.DeriveHash()
+
+	// new derive using proof of work
+	pow := NewProof(block)
+	nonce, hash := pow.Run()
+	block.Hash = hash[:]
+	block.Nonce = nonce
+
 	return block
 }
 
