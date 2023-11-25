@@ -91,10 +91,10 @@ func (chain *BlockChain) AddBlock(data string) { // add block
 
 	err = chain.Database.Update(func(tx *badger.Txn) error {
 
-		err := tx.Set(newB.Hash, newB.Serializer())
+		err := tx.Set(newB.Hash, newB.Serializer()) // update db
 		Handle(err)
 		err = tx.Set([]byte("lh"), newB.Hash)
-		chain.LastHash = newB.Hash
+		chain.LastHash = newB.Hash // update last hash to current for next item
 		return err
 	})
 	Handle(err)
