@@ -103,13 +103,7 @@ func ContinueBlockChain(address string) *BlockChain { // use existing block chai
 		runtime.Goexit()
 	}
 
-	var lh []byte // last hash
-
-	if DBexists() {
-		fmt.Println("Blockchain exists")
-		runtime.Goexit()
-	}
-
+	var lh []byte                         // last hash
 	opts := badger.DefaultOptions(dbPath) // specifcy where to store
 	opts.Dir = dbPath                     // dir stores keys and meta data
 	opts.ValueDir = dbPath                // stores values  ( same loc in this case )
