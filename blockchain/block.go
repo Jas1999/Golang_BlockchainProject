@@ -2,6 +2,7 @@ package blockchain
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/gob"
 	"log"
 )
@@ -13,10 +14,11 @@ type BlockChain struct { // simple strucutre for chian
 }
 */
 type Block struct {
-	Hash     []byte
-	Data     []byte
-	PrevHash []byte
-	Nonce    int
+	Hash []byte
+	//Data     []byte
+	Transactions []*Transaction // array of transactions
+	PrevHash     []byte
+	Nonce        int
 }
 
 /*
@@ -27,8 +29,9 @@ func (b *Block) DeriveHash() { // method to create hash based on data and previo
 	b.Hash = hash[:]
 }
 */
-func CreateBlock(data string, prevHash []byte) *Block { // take string and prev output pointer to blcok
-	block := &Block{[]byte{}, []byte(data), prevHash, 0} // new block
+func CreateBlock(txs []*Transaction, prevHash []byte) *Block { // take string and prev output pointer to blcok
+	// block := &Block{[]byte{}, []byte(data), prevHash, 0} // new block ( string for data used to be passed in )
+	block := &Block{[]byte{}, txs, prevHash, 0} // new block
 
 	// block.DeriveHash()
 
@@ -51,8 +54,9 @@ func (chain *BlockChain) AddBlock(data string) { // add block
 }
 */
 // Genesis block creations
-func Genesis() *Block { // take string and prev output pointer to blcok
-	return CreateBlock("Gensis", []byte{})
+func Genesis(cb *Transaction) *Block { // take string and prev output pointer to blcok
+	//return CreateBlock("Gensis", []byte{})
+	return CreateBlock([]*Transaction{cb}, []byte{})
 }
 
 /*
@@ -81,6 +85,19 @@ func Deserialize(data []byte) *Block {
 	Handle(err)
 
 	return &block
+}
+
+// pow for hashs in transactions
+func (b *Block) HashTransactions() []byte {
+	var txHashes [][]byte
+	var txHash [32]byte
+
+	for _, tx := range b.Transactions {
+		txHashes = append(txHashes, tx.ID) // combine and hash
+	}
+	txHash = sha256.Sum256(bytes.Join(txHashes, []byte{}))
+
+	return txHash[:]
 }
 
 func Handle(err error) {

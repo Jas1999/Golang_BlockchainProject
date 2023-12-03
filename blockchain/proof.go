@@ -41,7 +41,8 @@ func (pow *ProofOfWork) InitData(nonce int) []byte { // part target and create h
 	data := bytes.Join(
 		[][]byte{
 			pow.Block.PrevHash,
-			pow.Block.Data,
+			//pow.Block.Data,
+			pow.Block.HashTransactions(),
 			ToHex(int64(nonce)),
 			ToHex(int64(difficulty)),
 		}, []byte{},
